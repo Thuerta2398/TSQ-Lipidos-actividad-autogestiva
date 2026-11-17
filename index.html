@@ -1,0 +1,568 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lípidos: del plato a la arteria</title>
+<meta name="description" content="Interactivo de apoyo · Temas Selectos de Química · Unidad III · 3.3 Lípidos: función, metabolismo, alimentos y riesgos.">
+<style>
+:root{
+  --azul-oscuro:#0d3b66; --azul-medio:#1b6fb2; --azul-claro:#78b4dc; --azul-fondo:#ebf4fa;
+  --gris:#282828; --rojo:#c62828; --verde:#2e7d32; --blanco:#ffffff; --borde:#c9dcea;
+  --bg:#f7fbfe; --card:#ffffff; --texto:#282828; --suave:#5a6b7a; --titulo:#1b6fb2;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e1a26; --card:#152536; --texto:#e8eef4; --suave:#a9bccc; --azul-fondo:#1c3247; --borde:#2b4660; --titulo:#78b4dc;
+  }
+}
+:root[data-theme="dark"]{ --bg:#0e1a26; --card:#152536; --texto:#e8eef4; --suave:#a9bccc; --azul-fondo:#1c3247; --borde:#2b4660; --titulo:#78b4dc; }
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--texto);font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;font-size:17px;line-height:1.5}
+header{background:var(--azul-oscuro);color:#fff;padding:14px 96px 10px 16px}
+header .curso{font-size:.85rem;opacity:.85}
+header h1{margin:2px 0 0;font-size:1.35rem}
+.franja{height:5px;background:linear-gradient(90deg,var(--azul-medio) 0 70%,var(--azul-claro) 70% 100%)}
+.barra{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--borde);padding:8px 16px}
+.barra .pista{height:10px;background:var(--azul-fondo);border-radius:6px;overflow:hidden}
+.barra .relleno{height:100%;width:0;background:var(--azul-medio);transition:width .4s}
+.barra .txt{font-size:.8rem;color:var(--suave);margin-top:3px;display:flex;justify-content:space-between}
+main{max-width:860px;margin:0 auto;padding:16px}
+.estacion{display:none;background:var(--card);border:1px solid var(--borde);border-radius:14px;padding:18px 16px;animation:entra .35s ease}
+.estacion.activa{display:block}
+@keyframes entra{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+h2{color:var(--titulo);margin:0 0 4px;font-size:1.25rem}
+.chip{text-align:left}
+.etiqueta-est{font-size:.8rem;font-weight:700;color:var(--azul-claro);letter-spacing:.04em;text-transform:uppercase}
+.caja{background:var(--azul-fondo);border-left:5px solid var(--azul-medio);border-radius:8px;padding:10px 12px;margin:10px 0}
+.caja.alerta{border-left-color:var(--rojo)}
+.nav{display:flex;justify-content:space-between;gap:10px;margin-top:18px;flex-wrap:wrap}
+button{font:inherit;cursor:pointer;border-radius:10px;border:2px solid var(--azul-medio);background:var(--card);color:var(--texto);padding:8px 14px}
+button.prim{background:var(--azul-medio);color:#fff}
+button:disabled{opacity:.45;cursor:not-allowed}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--azul-claro);outline-offset:2px}
+input,select,textarea{font:inherit;padding:8px 10px;border-radius:8px;border:1px solid var(--borde);background:var(--card);color:var(--texto);width:100%}
+label{font-weight:600;display:block;margin:10px 0 4px}
+.grid{display:grid;gap:10px}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g2{grid-template-columns:repeat(2,1fr)}
+@media (max-width:640px){.g3{grid-template-columns:repeat(2,1fr)}.g2{grid-template-columns:1fr}}
+/* tarjetas que voltean */
+.flip{perspective:800px;height:130px}
+.flip .in{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+.flip.on .in{transform:rotateY(180deg)}
+.flip .cara{position:absolute;inset:0;backface-visibility:hidden;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:8px;border:2px solid var(--azul-medio)}
+.flip .frente{background:var(--azul-fondo);font-weight:700;font-size:.92rem;overflow-wrap:anywhere}
+.flip .frente .ico{font-size:1.8rem}
+.flip .reverso{background:var(--azul-medio);color:#fff;transform:rotateY(180deg);font-size:.88rem}
+/* opciones */
+.opciones{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.chip{border-radius:20px;padding:6px 12px;border:2px solid var(--borde)}
+.chip.sel{border-color:var(--azul-medio);background:var(--azul-fondo)}
+.chip.ok{border-color:var(--verde);background:#e3f3e5;color:#1b4d1f}
+.chip.mal{border-color:var(--rojo);background:#fbe4e4;color:#7a1b1b}
+.fila{border:1px solid var(--borde);border-radius:10px;padding:10px;margin:8px 0}
+.fila.ok{border-color:var(--verde);box-shadow:inset 4px 0 0 var(--verde)}
+.fila.mal{border-color:var(--rojo);box-shadow:inset 4px 0 0 var(--rojo)}
+.fb{font-size:.92rem;margin-top:6px;min-height:1.2em}
+.fb.ok{color:var(--verde)} .fb.mal{color:var(--rojo)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .chip.ok{color:#1b4d1f}:root:not([data-theme="light"]) .chip.mal{color:#7a1b1b}}
+/* orden */
+.orden-lista{list-style:none;padding:0;margin:8px 0}
+.orden-lista li{display:flex;align-items:center;gap:8px;border:1px solid var(--borde);border-radius:10px;padding:8px;margin:6px 0;background:var(--card)}
+.orden-lista li .num{background:var(--azul-medio);color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-weight:700;flex:0 0 28px}
+.orden-lista li .t{flex:1}
+.orden-lista li button{padding:2px 9px}
+/* camiones */
+.ruta{position:relative;height:150px;background:var(--azul-fondo);border-radius:12px;margin:10px 0;overflow:hidden}
+.ruta .lugar{position:absolute;top:50%;transform:translateY(-50%);background:var(--card);border:2px solid var(--azul-medio);border-radius:10px;padding:6px 10px;font-weight:700;font-size:.9rem}
+.ruta .higado{left:8px}.ruta .arteria{right:8px;border-color:var(--rojo)}
+.camion{position:absolute;font-size:1.6rem;transition:left 2.2s ease-in-out}
+.camion small{display:block;font-size:.7rem;font-weight:700;text-align:center}
+.camion.ldl{top:12px;left:90px;color:var(--rojo)}
+.camion.hdl{bottom:10px;left:calc(100% - 150px);color:var(--azul-medio)}
+.ruta.mover .ldl{left:calc(100% - 150px)}
+.ruta.mover .hdl{left:90px}
+/* refresco */
+.pasos-ref{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:10px 0}
+.pasos-ref div{border:2px dashed var(--borde);border-radius:10px;padding:8px 4px;text-align:center;font-size:.8rem;opacity:.35;transition:all .4s}
+.pasos-ref div .ico{font-size:1.6rem;display:block}
+.pasos-ref div.on{opacity:1;border-style:solid;border-color:var(--azul-medio);background:var(--azul-fondo);transform:scale(1.04)}
+.pasos-ref div.fin.on{border-color:var(--rojo)}
+@media (max-width:640px){.pasos-ref{grid-template-columns:repeat(2,1fr)}}
+/* etiquetas de producto */
+.producto{border:2px solid var(--gris);border-radius:10px;padding:10px;background:#fff;color:#282828}
+.producto h4{margin:0 0 4px}
+.sello{display:inline-block;background:#111;color:#fff;font-weight:800;font-size:.62rem;padding:10px 6px;margin:3px 3px 3px 0;line-height:1.1;text-align:center;clip-path:polygon(25% 0,75% 0,100% 25%,100% 75%,75% 100%,25% 100%,0 75%,0 25%);width:92px;vertical-align:middle}
+.ingr{font-size:.82rem}
+.resaltar{background:#fff3b0}
+/* comprobante */
+canvas{max-width:100%;border:1px solid var(--borde);border-radius:8px;background:#fff}
+.peq{font-size:.85rem;color:var(--suave)}
+footer{max-width:860px;margin:0 auto;padding:4px 16px 24px;font-size:.78rem;color:var(--suave)}
+.tema{position:absolute;right:12px;top:12px;background:transparent;color:#fff;border-color:rgba(255,255,255,.6);padding:4px 10px;font-size:.8rem}
+header{position:relative}
+</style>
+</head>
+<body>
+<header>
+  <div class="curso">Temas Selectos de Química · Unidad III · 3.3 Lípidos</div>
+  <h1>Lípidos: del plato a la arteria</h1>
+  <button class="tema" id="btnTema" aria-label="Cambiar tema claro u oscuro">◐ Tema</button>
+</header>
+<div class="franja"></div>
+<div class="barra">
+  <div class="pista"><div class="relleno" id="relleno"></div></div>
+  <div class="txt"><span id="txtEst">Estación 0 de 8</span><span id="txtPct">0 %</span></div>
+</div>
+
+<main>
+
+<!-- 0 REGISTRO -->
+<section class="estacion" data-n="0">
+  <div class="etiqueta-est">Inicio</div>
+  <h2>Bienvenida, residente</h2>
+  <p>Don Rafa regresó a consulta y dice: <b>«Voy a dejar la grasa por completo. ¿Así me curo?»</b> En este recorrido de 8 estaciones vas a reunir la química que necesitas para responderle. Al final descargas tu <b>comprobante</b> (PNG o PDF) y lo subes a Blackboard.</p>
+  <div class="caja">Puedes repetir cada actividad las veces que quieras: aquí se aprende equivocándose. Tu avance se guarda en este navegador.</div>
+  <label for="nombre">Nombre completo</label>
+  <input id="nombre" autocomplete="name" placeholder="Nombre y apellidos">
+  <label for="grupo">Grupo</label>
+  <input id="grupo" placeholder="Ej.: 500B">
+  <p class="fb mal" id="fbReg"></p>
+  <div class="nav"><span></span><button class="prim" id="btnIniciar">Comenzar →</button></div>
+</section>
+
+<!-- 1 FUNCIONES -->
+<section class="estacion" data-n="1">
+  <div class="etiqueta-est">Estación 1 · 3.3.4 Función biológica</div>
+  <h2>¿Para qué necesita grasa tu cuerpo?</h2>
+  <p>Toca cada tarjeta para descubrir una de las <b>seis funciones</b> de los lípidos.</p>
+  <div class="grid g3" id="tarjetas"></div>
+  <h3>Reto: une cada lípido con su función principal</h3>
+  <div id="retoFunc"></div>
+  <button class="prim" id="chkFunc">Revisar</button>
+  <p class="fb" id="fbFunc"></p>
+  <div class="nav"><button data-ir="-1">← Atrás</button><button class="prim" data-ir="1">Siguiente →</button></div>
+</section>
+
+<!-- 2 VIAJE -->
+<section class="estacion" data-n="2">
+  <div class="etiqueta-est">Estación 2 · 3.3.5 Metabolismo</div>
+  <h2>El viaje de una grasa</h2>
+  <p>Ordena las etapas del viaje de la grasa de unas papas fritas, desde que entra a tu intestino. Usa ▲ ▼ para mover.</p>
+  <ul class="orden-lista" id="ordenLista"></ul>
+  <button class="prim" id="chkOrden">Revisar orden</button>
+  <p class="fb" id="fbOrden"></p>
+  <div class="caja"><b>Clave del método:</b> el metabolismo se entiende como una <b>secuencia de etapas</b>; en cada una pregúntate <i>dónde ocurre</i>, <i>qué entra</i> y <i>qué sale</i>.</div>
+  <div class="nav"><button data-ir="-1">← Atrás</button><button class="prim" data-ir="1">Siguiente →</button></div>
+</section>
+
+<!-- 3 HDL LDL -->
+<section class="estacion" data-n="3">
+  <div class="etiqueta-est">Estación 3 · Transporte</div>
+  <h2>HDL y LDL: repartidores y recolectores</h2>
+  <p>La grasa es apolar y la sangre es casi agua, así que el colesterol viaja dentro de <b>lipoproteínas</b>. Pulsa el botón para ver la ruta de cada «camión».</p>
+  <div class="ruta" id="ruta">
+    <div class="lugar higado">🫀 Hígado</div>
+    <div class="lugar arteria">Arterias</div>
+    <div class="camion ldl">🚚<small>LDL</small></div>
+    <div class="camion hdl">🚛<small>HDL</small></div>
+  </div>
+  <button id="btnRuta">▶ Ver la ruta</button>
+  <div class="caja"><b>LDL</b> (rojo): reparte colesterol del hígado a las arterias y tejidos. <b>HDL</b> (azul): recoge el sobrante y lo regresa al hígado. Don Rafa: LDL 165 (deseable &lt; 100) y HDL 36 (deseable &gt; 60).</div>
+  <h3>Reto: ¿HDL o LDL?</h3>
+  <div id="retoHdl"></div>
+  <button class="prim" id="chkHdl">Revisar</button>
+  <p class="fb" id="fbHdl"></p>
+  <div class="nav"><button data-ir="-1">← Atrás</button><button class="prim" data-ir="1">Siguiente →</button></div>
+</section>
+
+<!-- 4 REFRESCO -->
+<section class="estacion" data-n="4">
+  <div class="etiqueta-est">Estación 4 · Lipogénesis</div>
+  <h2>Del refresco al triglicérido</h2>
+  <p>El refresco no trae grasa… pero los triglicéridos de don Rafa están en 280 mg/dL. Avanza paso a paso.</p>
+  <div class="pasos-ref" id="pasosRef">
+    <div><span class="ico">🥤</span>Azúcar del refresco llega a la sangre</div>
+    <div><span class="ico">📦</span>El glucógeno se llena pronto</div>
+    <div><span class="ico">✂️</span>El hígado corta el azúcar en piezas de 2 C</div>
+    <div><span class="ico">🔗</span>Une piezas: ácidos grasos + glicerol</div>
+    <div class="fin"><span class="ico">🩸</span>Triglicéridos a la sangre (VLDL)</div>
+  </div>
+  <p id="txtRef" class="caja">Paso 0: pulsa «Siguiente paso».</p>
+  <button id="btnRef">Siguiente paso ▶</button>
+  <h3>Reto: completa la idea</h3>
+  <p>Cuando el almacén de glucógeno ya está lleno, el hígado convierte el azúcar sobrante en
+    <select id="selRef" aria-label="Completa la frase">
+      <option value="">elige…</option><option value="a">proteínas</option><option value="b">triglicéridos</option><option value="c">vitaminas</option><option value="d">agua</option>
+    </select>; a este proceso se le llama
+    <select id="selRef2" aria-label="Nombre del proceso">
+      <option value="">elige…</option><option value="a">β-oxidación</option><option value="b">hidrólisis</option><option value="c">lipogénesis</option>
+    </select>.</p>
+  <button class="prim" id="chkRef">Revisar</button>
+  <p class="fb" id="fbRef"></p>
+  <div class="nav"><button data-ir="-1">← Atrás</button><button class="prim" data-ir="1">Siguiente →</button></div>
+</section>
+
+<!-- 5 ALIMENTOS -->
+<section class="estacion" data-n="5">
+  <div class="etiqueta-est">Estación 5 · 3.3.6 Alimentos</div>
+  <h2>¿Qué grasa tiene cada alimento?</h2>
+  <p>Clasifica cada alimento según el tipo de grasa que predomina en él.</p>
+  <div id="retoAlim"></div>
+  <button class="prim" id="chkAlim">Revisar</button>
+  <p class="fb" id="fbAlim"></p>
+  <div class="caja">Los <b>omega</b> se nombran por la posición del <b>primer</b> doble enlace contando desde el extremo CH₃: ω-3 y ω-6 son poliinsaturados y esenciales; ω-9 (oleico) es monoinsaturado.</div>
+  <div class="nav"><button data-ir="-1">← Atrás</button><button class="prim" data-ir="1">Siguiente →</button></div>
+</section>
+
+<!-- 6 ETIQUETAS -->
+<section class="estacion" data-n="6">
+  <div class="etiqueta-est">Estación 6 · Etiquetas</div>
+  <h2>Inspector de etiquetas: método de 3 preguntas</h2>
+  <div class="caja"><b>1.</b> ¿Qué sellos tiene? &nbsp; <b>2.</b> ¿Los ingredientes dicen «parcialmente hidrogenado»? (= grasa <i>trans</i>) &nbsp; <b>3.</b> ¿Qué tipo de grasa domina? Decide: <b>elegir</b> o <b>limitar</b>.</div>
+  <p class="peq">Productos y etiquetas ficticios, con fines didácticos.</p>
+  <div id="retoEtiq"></div>
+  <button class="prim" id="chkEtiq">Revisar</button>
+  <p class="fb" id="fbEtiq"></p>
+  <div class="nav"><button data-ir="-1">← Atrás</button><button class="prim" data-ir="1">Siguiente →</button></div>
+</section>
+
+<!-- 7 RIESGOS + QUIZ -->
+<section class="estacion" data-n="7">
+  <div class="etiqueta-est">Estación 7 · 3.3.7 Riesgos y quiz</div>
+  <h2>Riesgos del consumo inadecuado</h2>
+  <div class="grid g2">
+    <div class="caja alerta"><b>Por exceso:</b> dislipidemia, aterosclerosis (placa en las arterias por el colesterol que deja el LDL), infarto o embolia, hígado graso.</div>
+    <div class="caja"><b>Por déficit:</b> sin vitaminas A (ceguera nocturna), D (huesos débiles), E (nervios y músculos), K (coagulación); sin ácidos grasos esenciales ω-3 y ω-6.</div>
+  </div>
+  <h3>Quiz final</h3>
+  <div id="quiz"></div>
+  <button class="prim" id="chkQuiz">Calificar quiz</button>
+  <p class="fb" id="fbQuiz"></p>
+  <div class="nav"><button data-ir="-1">← Atrás</button><button class="prim" data-ir="1">Siguiente →</button></div>
+</section>
+
+<!-- 8 COMPROBANTE -->
+<section class="estacion" data-n="8">
+  <div class="etiqueta-est">Estación 8 · Cierre</div>
+  <h2>Tu respuesta para don Rafa</h2>
+  <label for="reflexion">En 3 a 5 líneas: ¿debe don Rafa dejar la grasa por completo? Explícale qué hacer, usando lo que aprendiste.</label>
+  <textarea id="reflexion" rows="5" placeholder="Don Rafa, ..."></textarea>
+  <p class="peq" id="cuentaRef">0 palabras (mínimo sugerido: 30)</p>
+  <div class="nav"><button data-ir="-1">← Atrás</button><button class="prim" id="btnGenerar">Generar comprobante</button></div>
+  <div id="zonaComp" hidden>
+    <h3>Comprobante</h3>
+    <canvas id="lienzo" width="1000" height="1300" aria-label="Vista previa del comprobante"></canvas>
+    <div class="nav">
+      <button class="prim" id="btnPng">⬇ Descargar PNG</button>
+      <button class="prim" id="btnPdf">⬇ Descargar PDF</button>
+    </div>
+    <p class="peq">Sube el PNG o el PDF a Blackboard. Si la descarga no funciona en tu celular, mantén presionada la imagen y elige «Guardar imagen».</p>
+  </div>
+</section>
+
+</main>
+<footer>
+  Interactivo de apoyo · Temas Selectos de Química · Unidad III · 3.3 Lípidos (función, metabolismo, alimentos y riesgos). Caso clínico ficticio con fines educativos; no sustituye una consulta médica.
+  Fuentes: Daub y Seese (2005), <i>Química</i> (8.ª ed.); Betts et al. (2022), <i>Anatomy and Physiology 2e</i>, OpenStax; WHO (2023), <i>Saturated fatty acid and trans-fatty acid intake for adults and children</i>; NOM-051-SCFI/SSA1-2010, modificación DOF 27/03/2020.
+</footer>
+
+<script>
+(function(){
+"use strict";
+var TOTAL=8, KEY="lipidos_s13_v1";
+var estado={est:0,nombre:"",grupo:"",res:{},reflexion:""};
+function guardar(){try{localStorage.setItem(KEY,JSON.stringify(estado));}catch(e){}}
+try{var g=JSON.parse(localStorage.getItem(KEY)||"null");if(g&&typeof g==="object"){estado=Object.assign(estado,g);}}catch(e){}
+try{var t=localStorage.getItem("lipidos_tema");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}
+document.getElementById("btnTema").onclick=function(){
+  var cur=document.documentElement.getAttribute("data-theme");
+  var osc=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;
+  var nuevo=cur?(cur==="dark"?"light":"dark"):(osc?"light":"dark");
+  document.documentElement.setAttribute("data-theme",nuevo);try{localStorage.setItem("lipidos_tema",nuevo);}catch(e){}
+};
+var secciones=[].slice.call(document.querySelectorAll(".estacion"));
+function $(id){return document.getElementById(id);}
+function mostrar(n){
+  n=Math.max(0,Math.min(TOTAL,n));
+  if(n>0&&!estado.nombre){n=0;}
+  estado.est=n;guardar();
+  secciones.forEach(function(s){s.classList.toggle("activa",+s.dataset.n===n);});
+  var hechas=Object.keys(estado.res).length;
+  var pct=Math.round(100*Math.max(n,0)/TOTAL);
+  $("relleno").style.width=pct+"%";$("txtPct").textContent=pct+" %";
+  $("txtEst").textContent=n===0?"Inicio":"Estación "+n+" de "+TOTAL;
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+document.querySelectorAll("[data-ir]").forEach(function(b){b.addEventListener("click",function(){mostrar(estado.est+(+b.dataset.ir));});});
+function fb(id,ok,txt){var e=$(id);e.className="fb "+(ok?"ok":"mal");e.textContent=txt;}
+function registrar(clave,ac,tot){estado.res[clave]={ac:ac,tot:tot};guardar();}
+
+/* ---------- 0 registro ---------- */
+$("nombre").value=estado.nombre;$("grupo").value=estado.grupo;
+$("btnIniciar").onclick=function(){
+  var n=$("nombre").value.trim(),g=$("grupo").value.trim();
+  if(n.split(/\s+/).length<2){$("fbReg").textContent="Escribe tu nombre y al menos un apellido.";return;}
+  if(!g){$("fbReg").textContent="Escribe tu grupo.";return;}
+  $("fbReg").textContent="";estado.nombre=n;estado.grupo=g;guardar();mostrar(1);
+};
+
+/* ---------- utilidades de retos con opciones ---------- */
+function retoChips(contId,items,opciones){
+  var c=$(contId);c.innerHTML="";
+  items.forEach(function(it,i){
+    var f=document.createElement("div");f.className="fila";f.dataset.i=i;
+    f.innerHTML="<div>"+it.t+"</div>";
+    var o=document.createElement("div");o.className="opciones";
+    opciones.forEach(function(op){
+      var b=document.createElement("button");b.className="chip";b.textContent=op;b.type="button";
+      b.onclick=function(){[].forEach.call(o.children,function(x){x.classList.remove("sel","ok","mal");});b.classList.add("sel");f.dataset.sel=op;f.classList.remove("ok","mal");};
+      o.appendChild(b);
+    });
+    f.appendChild(o);var e=document.createElement("div");e.className="fb";f.appendChild(e);c.appendChild(f);
+  });
+}
+function revisarChips(contId,items,fbId,clave){
+  var filas=[].slice.call($(contId).children),ac=0,vacias=0;
+  filas.forEach(function(f,i){
+    var sel=f.dataset.sel,ok=sel===items[i].r;
+    if(!sel){vacias++;return;}
+    if(ok)ac++;
+    f.classList.toggle("ok",ok);f.classList.toggle("mal",!ok);
+    [].forEach.call(f.querySelectorAll(".chip"),function(b){if(b.textContent===sel){b.classList.remove("sel");b.classList.add(ok?"ok":"mal");}});
+    var e=f.querySelector(".fb");e.className="fb "+(ok?"ok":"mal");e.textContent=ok?"✔ "+(items[i].x||"Correcto."):"✘ Inténtalo de nuevo. Pista: "+(items[i].p||"revisa la explicación de arriba.");
+  });
+  if(vacias){fb(fbId,false,"Te faltan "+vacias+" por responder.");return;}
+  registrar(clave,ac,items.length);
+  fb(fbId,ac===items.length,ac===items.length?"¡Excelente! "+ac+" de "+items.length+". Puedes avanzar.":ac+" de "+items.length+" correctas. Corrige las marcadas en rojo y vuelve a revisar.");
+}
+
+/* ---------- 1 funciones ---------- */
+var funciones=[
+  ["⚡","Energética","1 g de grasa da 9 kcal, más del doble que 1 g de carbohidrato (4 kcal)."],
+  ["🔋","Reserva","Los triglicéridos se guardan en los adipocitos del tejido adiposo."],
+  ["🧱","Estructural","Fosfolípidos y colesterol forman las membranas de todas tus células."],
+  ["🧥","Aislante y protectora","Conserva el calor y amortigua órganos como los riñones."],
+  ["🧪","Reguladora","El colesterol es materia prima de hormonas y vitamina D; grasa para absorber A, D, E y K."],
+  ["💧","Impermeabilizante","Las ceras protegen plumas, hojas y piel del agua."]
+];
+var tj=$("tarjetas");
+funciones.forEach(function(f){
+  var d=document.createElement("button");d.type="button";d.className="flip";d.style.border="0";d.style.padding="0";d.style.background="transparent";
+  d.setAttribute("aria-label","Función "+f[1]+": "+f[2]);
+  d.innerHTML='<div class="in"><div class="cara frente"><span class="ico">'+f[0]+'</span>'+f[1]+'</div><div class="cara reverso">'+f[2]+'</div></div>';
+  d.onclick=function(){d.classList.toggle("on");};tj.appendChild(d);
+});
+var itFunc=[
+  {t:"🫒 Triglicéridos",r:"Reserva de energía",p:"es la grasa que se guarda en los adipocitos.",x:"Reserva de energía y aislante."},
+  {t:"🧫 Fosfolípidos",r:"Membranas celulares",p:"tienen cabeza polar y dos colas: forman la bicapa.",x:"Forman la bicapa de las membranas."},
+  {t:"🧬 Esteroides (colesterol)",r:"Hormonas",p:"testosterona, estrógenos y cortisol vienen del colesterol.",x:"De ellos salen las hormonas sexuales y el cortisol."},
+  {t:"🦆 Ceras",r:"Impermeabilizar",p:"piensa en las plumas de un pato.",x:"Repelen el agua."}
+];
+retoChips("retoFunc",itFunc,["Reserva de energía","Membranas celulares","Hormonas","Impermeabilizar"]);
+$("chkFunc").onclick=function(){revisarChips("retoFunc",itFunc,"fbFunc","Funciones");};
+
+/* ---------- 2 orden ---------- */
+var etapas=["La bilis emulsiona la grasa en gotitas","La lipasa hidroliza los triglicéridos (rompe los enlaces éster con agua)","Las piezas se rearman y viajan en quilomicrones por la sangre","Los tejidos toman la grasa: el músculo la quema (β-oxidación) o el adipocito la guarda"];
+var orden=[2,0,3,1];
+function pintarOrden(){
+  var ul=$("ordenLista");ul.innerHTML="";
+  orden.forEach(function(k,pos){
+    var li=document.createElement("li");
+    li.innerHTML='<span class="num">'+(pos+1)+'</span><span class="t">'+etapas[k]+'</span>';
+    var up=document.createElement("button");up.textContent="▲";up.type="button";up.setAttribute("aria-label","Subir");up.disabled=pos===0;
+    var dn=document.createElement("button");dn.textContent="▼";dn.type="button";dn.setAttribute("aria-label","Bajar");dn.disabled=pos===orden.length-1;
+    up.onclick=function(){var t=orden[pos-1];orden[pos-1]=orden[pos];orden[pos]=t;pintarOrden();};
+    dn.onclick=function(){var t=orden[pos+1];orden[pos+1]=orden[pos];orden[pos]=t;pintarOrden();};
+    li.appendChild(up);li.appendChild(dn);ul.appendChild(li);
+  });
+}
+pintarOrden();
+$("chkOrden").onclick=function(){
+  var ac=orden.filter(function(k,i){return k===i;}).length;
+  [].forEach.call($("ordenLista").children,function(li,i){li.style.borderColor=orden[i]===i?"var(--verde)":"var(--rojo)";});
+  registrar("Viaje de la grasa",ac,4);
+  fb("fbOrden",ac===4,ac===4?"¡Orden correcto! Emulsión → hidrólisis → transporte → uso o almacenamiento.":ac+" de 4 en su lugar (verde). Pista: primero hay que hacer gotitas para que la enzima pueda trabajar.");
+};
+
+/* ---------- 3 HDL LDL ---------- */
+$("btnRuta").onclick=function(){var r=$("ruta");r.classList.remove("mover");void r.offsetWidth;setTimeout(function(){r.classList.add("mover");},30);};
+var itHdl=[
+  {t:"Lleva colesterol del hígado hacia las arterias y los tejidos.",r:"LDL",x:"El repartidor.",p:"¿quién sale del hígado?"},
+  {t:"Recoge el colesterol sobrante y lo regresa al hígado.",r:"HDL",x:"El recolector.",p:"¿quién regresa al hígado?"},
+  {t:"Si está alto, aumenta el riesgo de placa en las arterias.",r:"LDL",x:"Por eso le dicen colesterol «malo».",p:"¿qué camión deja colesterol en la arteria?"},
+  {t:"Conviene tenerlo alto; la actividad física ayuda a subirlo.",r:"HDL",x:"Por eso le dicen colesterol «bueno».",p:"el de don Rafa estaba bajo (36)."},
+  {t:"Las grasas trans lo elevan.",r:"LDL",x:"Además, las trans bajan el HDL.",p:"las trans se comportan como saturadas."}
+];
+retoChips("retoHdl",itHdl,["HDL","LDL"]);
+$("chkHdl").onclick=function(){revisarChips("retoHdl",itHdl,"fbHdl","HDL y LDL");};
+
+/* ---------- 4 refresco ---------- */
+var txtR=["Paso 1: la glucosa y la fructosa del refresco llegan rápido a la sangre (recuerda: unas 16 cucharaditas en 600 mL).","Paso 2: una parte se guarda como glucógeno, pero ese almacén es pequeño y se llena pronto.","Paso 3: el hígado corta el azúcar sobrante en piezas de 2 carbonos (acetil-CoA).","Paso 4: une esas piezas en cadenas largas (ácidos grasos) y las une al glicerol con enlaces éster.","Paso 5: los triglicéridos salen a la sangre dentro de la VLDL. ¡Por eso subieron a 280 mg/dL!"];
+var pr=0;
+$("btnRef").onclick=function(){
+  var cajas=$("pasosRef").children;
+  if(pr>=cajas.length){pr=0;[].forEach.call(cajas,function(c){c.classList.remove("on");});$("txtRef").textContent="Paso 0: pulsa «Siguiente paso».";$("btnRef").textContent="Siguiente paso ▶";return;}
+  cajas[pr].classList.add("on");$("txtRef").textContent=txtR[pr];pr++;
+  if(pr===cajas.length)$("btnRef").textContent="↺ Repetir";
+};
+$("chkRef").onclick=function(){
+  var a=$("selRef").value,b=$("selRef2").value;
+  if(!a||!b){fb("fbRef",false,"Elige una opción en cada espacio.");return;}
+  var ac=(a==="b"?1:0)+(b==="c"?1:0);registrar("Refresco → triglicéridos",ac,2);
+  fb("fbRef",ac===2,ac===2?"¡Exacto! Triglicéridos, por lipogénesis: el refresco no trae grasa, pero el hígado la fabrica.":"Aún no. Pista: el producto es una grasa y el proceso «genera lípidos».");
+};
+
+/* ---------- 5 alimentos ---------- */
+var itAlim=[
+  {t:"🫒 Aceite de oliva",r:"Monoinsaturada",x:"Rico en ácido oleico (ω-9).",p:"su ácido principal tiene un solo doble enlace."},
+  {t:"🧈 Mantequilla",r:"Saturada",x:"Sólida a temperatura ambiente: cadenas rectas.",p:"¿por qué es sólida?"},
+  {t:"🐟 Sardina",r:"Poliinsaturada ω-3",x:"Pescados azules: EPA y DHA.",p:"pescado azul."},
+  {t:"🌻 Aceite de girasol",r:"Poliinsaturada ω-6",x:"Rico en ácido linoleico.",p:"aceites de semillas (maíz, girasol, soya)."},
+  {t:"🥑 Aguacate",r:"Monoinsaturada",x:"Como el aceite de oliva.",p:"se parece al aceite de oliva."},
+  {t:"🍩 Dona industrial con grasa parcialmente hidrogenada",r:"Trans",x:"La hidrogenación parcial produce grasas trans.",p:"lee la palabra «hidrogenada»."},
+  {t:"🥓 Tocino",r:"Saturada",x:"Grasa animal, sólida.",p:"grasa de origen animal."},
+  {t:"🌱 Semillas de linaza y chía",r:"Poliinsaturada ω-3",x:"Fuente vegetal de ácido alfa-linolénico.",p:"es la fuente vegetal del ω-3."}
+];
+retoChips("retoAlim",itAlim,["Saturada","Monoinsaturada","Poliinsaturada ω-3","Poliinsaturada ω-6","Trans"]);
+$("chkAlim").onclick=function(){revisarChips("retoAlim",itAlim,"fbAlim","Alimentos y tipo de grasa");};
+
+/* ---------- 6 etiquetas ---------- */
+var productos=[
+  {n:"Galletas «Crujis» (ficticias)",s:["EXCESO GRASAS SATURADAS","EXCESO GRASAS TRANS"],i:'Harina de trigo, azúcar, <span class="resaltar">grasa vegetal parcialmente hidrogenada</span>, cacao, sal.',r:"Limitar",x:"Dos sellos de grasas y grasa parcialmente hidrogenada (trans)."},
+  {n:"Nueces naturales (ficticias)",s:[],i:"Nueces de Castilla.",r:"Elegir",x:"Mucha grasa, pero casi toda insaturada (ω-6 y ω-3); en porciones pequeñas."},
+  {n:"Papas «Doradas» (ficticias)",s:["EXCESO GRASAS SATURADAS","EXCESO SODIO"],i:"Papa, aceite de palma, sal, saborizantes.",r:"Limitar",x:"El aceite de palma es rico en saturadas; sello de grasas saturadas."},
+  {n:"Sardinas en aceite de oliva (ficticias)",s:[],i:"Sardina, aceite de oliva, sal.",r:"Elegir",x:"ω-3 del pescado y grasa monoinsaturada del aceite de oliva."}
+];
+var cE=$("retoEtiq");
+productos.forEach(function(p,k){
+  var f=document.createElement("div");f.className="fila";
+  var sellos=p.s.length?p.s.map(function(x){return '<span class="sello">'+x+'</span>';}).join(""):'<span class="peq" style="color:#555">Sin sellos</span>';
+  f.innerHTML='<div class="producto"><h4>'+p.n+'</h4>'+sellos+'<div class="ingr"><b>Ingredientes:</b> '+p.i+'</div></div>';
+  var o=document.createElement("div");o.className="opciones";
+  ["Elegir","Limitar"].forEach(function(op){var b=document.createElement("button");b.type="button";b.className="chip";b.textContent=op;b.onclick=function(){[].forEach.call(o.children,function(x){x.classList.remove("sel","ok","mal");});b.classList.add("sel");f.dataset.sel=op;f.classList.remove("ok","mal");};o.appendChild(b);});
+  f.appendChild(o);var e=document.createElement("div");e.className="fb";f.appendChild(e);cE.appendChild(f);
+});
+$("chkEtiq").onclick=function(){
+  revisarChips("retoEtiq",productos.map(function(p){return {r:p.r,x:p.x,p:"aplica las 3 preguntas: sellos, ingredientes, tipo de grasa."};}),"fbEtiq","Inspector de etiquetas");
+};
+
+/* ---------- 7 quiz ---------- */
+var preguntas=[
+  {q:"¿Por qué don Rafa NO debe eliminar la grasa por completo?",o:["Porque la grasa no influye en la salud","Porque la necesita para membranas, hormonas y vitaminas A, D, E y K","Porque el cuerpo no puede fabricar grasa","Porque toda la grasa es insaturada"],r:1},
+  {q:"La enzima que rompe los enlaces éster de los triglicéridos en el intestino es la…",o:["amilasa","lipasa","bilis","insulina"],r:1},
+  {q:"¿Qué proceso corta los ácidos grasos en piezas de 2 carbonos para obtener energía?",o:["Lipogénesis","Esterificación","β-oxidación","Emulsión"],r:2},
+  {q:"Un refresco puede subir los triglicéridos porque…",o:["contiene aceite oculto","el hígado convierte el azúcar sobrante en triglicéridos","el azúcar se transforma en colesterol HDL","las burbujas dañan las arterias"],r:1},
+  {q:"¿Cuál es un riesgo por DÉFICIT de lípidos en la dieta?",o:["Aterosclerosis","Hígado graso","Falta de absorción de vitaminas liposolubles","LDL alto"],r:2},
+  {q:"Un ingrediente que delata grasas trans en una etiqueta es:",o:["aceite de oliva extra virgen","grasa vegetal parcialmente hidrogenada","nueces de Castilla","harina integral"],r:1}
+];
+var cq=$("quiz");
+preguntas.forEach(function(p,i){
+  var f=document.createElement("div");f.className="fila";
+  f.innerHTML="<div><b>"+(i+1)+".</b> "+p.q+"</div>";
+  var o=document.createElement("div");o.className="opciones";
+  p.o.forEach(function(t,j){var b=document.createElement("button");b.type="button";b.className="chip";b.textContent=t;b.onclick=function(){[].forEach.call(o.children,function(x){x.classList.remove("sel","ok","mal");});b.classList.add("sel");f.dataset.sel=j;f.classList.remove("ok","mal");};o.appendChild(b);});
+  f.appendChild(o);var e=document.createElement("div");e.className="fb";f.appendChild(e);cq.appendChild(f);
+});
+$("chkQuiz").onclick=function(){
+  var filas=[].slice.call(cq.children),ac=0,vac=0;
+  filas.forEach(function(f,i){
+    if(f.dataset.sel===undefined){vac++;return;}
+    var s=+f.dataset.sel,ok=s===preguntas[i].r;if(ok)ac++;
+    f.classList.toggle("ok",ok);f.classList.toggle("mal",!ok);
+    var bs=f.querySelectorAll(".chip");bs[s].classList.remove("sel");bs[s].classList.add(ok?"ok":"mal");
+    var e=f.querySelector(".fb");e.className="fb "+(ok?"ok":"mal");e.textContent=ok?"✔ Correcto.":"✘ Revisa la estación correspondiente e inténtalo de nuevo.";
+  });
+  if(vac){fb("fbQuiz",false,"Te faltan "+vac+" preguntas.");return;}
+  registrar("Quiz final",ac,preguntas.length);
+  fb("fbQuiz",ac===preguntas.length,"Quiz: "+ac+" de "+preguntas.length+(ac===preguntas.length?". ¡Listo para el cierre!":". Puedes corregir y volver a calificar."));
+};
+
+/* ---------- 8 comprobante ---------- */
+$("reflexion").value=estado.reflexion||"";
+function contar(){var n=$("reflexion").value.trim().split(/\s+/).filter(Boolean).length;$("cuentaRef").textContent=n+" palabras (mínimo sugerido: 30)";estado.reflexion=$("reflexion").value;guardar();return n;}
+$("reflexion").addEventListener("input",contar);contar();
+var ORDEN=["Funciones","Viaje de la grasa","HDL y LDL","Refresco → triglicéridos","Alimentos y tipo de grasa","Inspector de etiquetas","Quiz final"];
+function envolver(ctx,texto,x,y,ancho,alto){
+  var pal=texto.split(/\s+/),linea="",yy=y;
+  for(var i=0;i<pal.length;i++){var prueba=linea?linea+" "+pal[i]:pal[i];if(ctx.measureText(prueba).width>ancho&&linea){ctx.fillText(linea,x,yy);linea=pal[i];yy+=alto;}else linea=prueba;}
+  if(linea)ctx.fillText(linea,x,yy);return yy+alto;
+}
+function dibujar(){
+  var c=$("lienzo"),ctx=c.getContext("2d"),W=c.width,H=c.height;
+  ctx.fillStyle="#ffffff";ctx.fillRect(0,0,W,H);
+  ctx.fillStyle="#0d3b66";ctx.fillRect(0,0,W,120);
+  ctx.fillStyle="#1b6fb2";ctx.fillRect(0,120,W,14);ctx.fillStyle="#78b4dc";ctx.fillRect(0,134,W,6);
+  ctx.fillStyle="#ffffff";ctx.font="bold 24px Arial";ctx.fillText("Temas Selectos de Química · Unidad III · 3.3 Lípidos",40,48);
+  ctx.font="bold 36px Arial";ctx.fillText("Comprobante: Lípidos, del plato a la arteria",40,96);
+  ctx.fillStyle="#282828";ctx.font="22px Arial";
+  ctx.fillText("Nombre: "+estado.nombre,40,190);ctx.fillText("Grupo: "+estado.grupo,40,224);
+  var d=new Date();ctx.fillText("Generado: "+d.toLocaleDateString("es-MX")+" "+d.toLocaleTimeString("es-MX",{hour:"2-digit",minute:"2-digit"}),40,258);
+  ctx.fillStyle="#0d3b66";ctx.font="bold 26px Arial";ctx.fillText("Resultados por actividad (último intento)",40,312);
+  var y=340,tAc=0,tTot=0;
+  ORDEN.forEach(function(k,i){
+    var r=estado.res[k];ctx.fillStyle=i%2?"#ffffff":"#ebf4fa";ctx.fillRect(40,y,W-80,44);
+    ctx.fillStyle="#282828";ctx.font="22px Arial";ctx.fillText(k,56,y+29);
+    var txt=r?r.ac+" / "+r.tot:"sin completar";ctx.font="bold 22px Arial";ctx.fillStyle=r?(r.ac===r.tot?"#2e7d32":"#1b6fb2"):"#c62828";
+    ctx.fillText(txt,W-230,y+29);if(r){tAc+=r.ac;tTot+=r.tot;}y+=44;
+  });
+  ctx.strokeStyle="#78b4dc";ctx.lineWidth=2;ctx.strokeRect(40,340,W-80,44*ORDEN.length);
+  y+=36;ctx.fillStyle="#0d3b66";ctx.font="bold 24px Arial";
+  var comp=ORDEN.filter(function(k){return estado.res[k];}).length;
+  ctx.fillText("Total de aciertos: "+tAc+" de "+tTot+"   ·   Actividades completadas: "+comp+" de "+ORDEN.length,40,y);
+  y+=50;ctx.fillText("Mi respuesta para don Rafa:",40,y);y+=34;
+  ctx.fillStyle="#282828";ctx.font="21px Arial";
+  y=envolver(ctx,(estado.reflexion||"(sin respuesta)").replace(/\s+/g," "),40,y,W-80,30);
+  ctx.fillStyle="#5a6b7a";ctx.font="16px Arial";
+  ctx.fillText("Interactivo de apoyo · Caso clínico ficticio con fines educativos.",40,H-30);
+}
+$("btnGenerar").onclick=function(){
+  var n=contar();
+  if(n<10){alertaSuave("Escribe tu respuesta para don Rafa (al menos unas líneas) antes de generar el comprobante.");return;}
+  dibujar();$("zonaComp").hidden=false;$("zonaComp").scrollIntoView({behavior:"smooth"});
+};
+function alertaSuave(t){var p=$("cuentaRef");p.textContent=t;p.style.color="var(--rojo)";setTimeout(function(){p.style.color="";},2500);}
+function nombreArchivo(ext){return ("Lipidos_S13_"+estado.nombre+"_"+estado.grupo).replace(/[^\wÁÉÍÓÚÑáéíóúñ]+/g,"_")+"."+ext;}
+$("btnPng").onclick=function(){
+  var a=document.createElement("a");a.download=nombreArchivo("png");a.href=$("lienzo").toDataURL("image/png");document.body.appendChild(a);a.click();a.remove();
+};
+/* PDF propio (sin librerias): una pagina carta con la imagen JPEG del comprobante */
+function pdfDesdeJpeg(dataUrl,iw,ih){
+  var bin=atob(dataUrl.split(",")[1]),img=new Uint8Array(bin.length);for(var i=0;i<bin.length;i++)img[i]=bin.charCodeAt(i);
+  var pw=612,ph=792,m=28,w=pw-2*m,h=w*ih/iw;if(h>ph-2*m){h=ph-2*m;w=h*iw/ih;}
+  var x=((pw-w)/2).toFixed(2),y=(ph-m-h).toFixed(2);
+  var cont="q "+w.toFixed(2)+" 0 0 "+h.toFixed(2)+" "+x+" "+y+" cm /Im0 Do Q";
+  var enc=function(t){var a=new Uint8Array(t.length);for(var k=0;k<t.length;k++)a[k]=t.charCodeAt(k)&255;return a;};
+  var partes=[],ofs=[],len=0;
+  function add(u){partes.push(u);len+=u.length;}
+  add(enc("%PDF-1.4\n"));
+  var objs=[
+    "<< /Type /Catalog /Pages 2 0 R >>",
+    "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
+    "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 "+pw+" "+ph+"] /Resources << /XObject << /Im0 4 0 R >> >> /Contents 5 0 R >>",
+    null,
+    "<< /Length "+cont.length+" >>\nstream\n"+cont+"\nendstream"
+  ];
+  for(var n=0;n<objs.length;n++){
+    ofs.push(len);
+    if(n===3){add(enc("4 0 obj\n<< /Type /XObject /Subtype /Image /Width "+iw+" /Height "+ih+" /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length "+img.length+" >>\nstream\n"));add(img);add(enc("\nendstream\nendobj\n"));}
+    else add(enc((n+1)+" 0 obj\n"+objs[n]+"\nendobj\n"));
+  }
+  var xref=len,t="xref\n0 6\n0000000000 65535 f \n";
+  ofs.forEach(function(o){t+=("0000000000"+o).slice(-10)+" 00000 n \n";});
+  t+="trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n"+xref+"\n%%EOF";add(enc(t));
+  return new Blob(partes,{type:"application/pdf"});
+}
+$("btnPdf").onclick=function(){
+  var c=$("lienzo"),blob=pdfDesdeJpeg(c.toDataURL("image/jpeg",0.92),c.width,c.height);
+  var url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=nombreArchivo("pdf");
+  document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url);},4000);
+};
+
+mostrar(estado.nombre?estado.est:0);
+})();
+</script>
+</body>
+</html>
